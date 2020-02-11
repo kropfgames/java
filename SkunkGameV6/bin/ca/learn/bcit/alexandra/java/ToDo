@@ -1,0 +1,54 @@
+
+To Do
+The score still adds a bit too much for the computer.
+
+Draw a board showing the player's score and the computer's score each round
+Account for triple rolls
+
+print each roll's score on the board?
+
+----------------------------------------------------------------------------------------
+
+Done
+
+Must reset the score each round
+
+Am I saving the player and computer's score per round to then add at the end?
+Must show:
+"Round #1 Results"
+"Your score: "
+"Computer score: "
+
+Plus at the end must show
+"Game Results"
+"Your score: "
+"Computer score: "
+
+
+
+print "round #1"
+
+
+Must enable multiple dice to be rolled
+After v18, I am enabling multiple dice. Before that, the game worked fine.
+
+Must account for a complete game ending if the dice rolled is a 1,1 - hard to test but probably done.
+
+"You win this round." not ending the game on a 1 roll
+
+Must make a total score because right now it is getting reset each round 
+
+Next I must make a Round class to make a new round each time.
+int[] skunkRounds = new int[6];
+for (int i: skunkRounds)
+{
+	GameController = new GameController;
+	
+}
+
+Put the Main class's functionality into a Round
+Make a GameController to loop through multiple rounds
+
+Next I must add a condition if the player and computer both locked their points
+Then the round must end
+So the areAllStanding will be set to false to end the round and break the loop

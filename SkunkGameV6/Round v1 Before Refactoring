@@ -1,0 +1,234 @@
+/**
+ * 
+ */
+package ca.learn.bcit.alexandra.java;
+
+/**
+ * @author  Alexandra Kropova
+ * @version Feb. 9, 2020
+ */
+public class Round
+{
+	public static final int NUMBER_OF_SKUNK_ROUNDS = 5;
+	
+	private Dice dice;
+	private Input input;
+	private Computer computer;
+	private Score score;
+	
+	private int turnScore;
+	private int playerTotalScore;
+	private int computerTotalScore;
+	
+	private boolean shouldNextRoundContinue;
+	private boolean isAnyoneStanding;
+	
+	/**
+	 * 
+	 */
+	public Round()
+	{
+		int[] rounds = new int[NUMBER_OF_SKUNK_ROUNDS];
+		
+		shouldNextRoundContinue = true;
+		
+		while (shouldNextRoundContinue)
+		{
+			for (int i : rounds)
+			{
+				generateARound();
+				
+				playerTotalScore += score.getPlayerScore();
+				computerTotalScore += score.getComputerScore();
+			}
+			shouldNextRoundContinue = false;
+		}
+		
+		System.out.println("Your final score: " + playerTotalScore);
+		System.out.println("Computer final score: " + computerTotalScore);
+
+		
+	}
+//	end of Round()
+	
+	
+	public void generateARound()
+	{
+		dice = new Dice();
+		input = new Input();
+		computer = new Computer(true);
+		score = new Score();
+		
+		isAnyoneStanding = true;
+		input.setIsPlayerStanding(true);
+		computer.setIsComputerStanding(true);
+		
+		int[] numberOfDice = new int[input.getDifficultyLevelSelected()];
+		
+		while (isAnyoneStanding)
+		{	
+			
+			for (int dice : numberOfDice)
+			{
+				dice = dice.generateRandom();
+			}
+			
+			int dice1 = dice.generateRandom();
+			int dice2 = dice.generateRandom();
+			turnScore = dice1 + dice2;
+
+			
+			System.out.println("Main.while: [" + dice1 + "][" + dice2 + "]");
+			
+			if (dice1 == 1 && dice2 == 1)
+			{
+				if (someoneIsStandingForADouble1Roll())
+				{
+					break;
+				}
+			}
+
+			else if (dice1 == 1 || dice2 == 1)
+			{
+				if (someoneIsStandingForASingle1Roll())
+				{
+					break;
+				}
+				
+			}
+			
+			else
+			{
+				if (everyoneDecidesToSit())
+				{
+					break;
+				}
+
+			}
+	
+		}
+//		end of while loop
+	}
+//	end of generateARound()
+
+
+	public boolean someoneIsStandingForADouble1Roll()
+	{
+		boolean shouldGameEnd = false;
+		
+		if (input.getIsPlayerStanding())
+		{
+			if (!computer.getIsComputerStanding())
+			{
+				System.out.println("The computer wins this game.");
+				score.setPlayerScore(-(score.getPlayerScore()));
+				System.out.println("Computer score: " + score.getComputerScore());
+				System.out.println("---------------------------------------------------------------------");
+				isAnyoneStanding = false;
+				shouldNextRoundContinue = false;
+				shouldGameEnd = true;
+			}
+			else
+			{
+				System.out.println("Everyone was standing.");
+				shouldGameEnd = true;
+			}
+		}
+		
+		else if (computer.getIsComputerStanding())
+		{
+			System.out.println("You win this game.");
+			System.out.println("Your score: " + score.getPlayerScore());
+			score.setComputerScore(-(score.getComputerScore()));
+			System.out.println("---------------------------------------------------------------------");
+			isAnyoneStanding = false;
+			shouldNextRoundContinue = false;
+			shouldGameEnd = true;
+		}
+		
+		else
+		{
+			System.out.println("Everyone was sitting.");
+			shouldGameEnd = true;
+		}
+		
+		return shouldGameEnd;
+	}
+	
+	/**
+	 * @return
+	 */
+	private boolean someoneIsStandingForASingle1Roll()
+	{
+		boolean shouldRoundEnd = false;
+		
+		if (input.getIsPlayerStanding())
+		{
+			if (!computer.getIsComputerStanding())
+			{
+				System.out.println("The computer wins this round.");
+				score.setPlayerScore(-(score.getPlayerScore()));
+				System.out.println("Computer score: " + score.getComputerScore());
+				System.out.println("---------------------------------------------------------------------");
+				isAnyoneStanding = false;
+				shouldRoundEnd = true;
+			}
+			
+			else
+			{
+				System.out.println("Everyone was standing. Skip.");
+			}
+		}
+		
+		else if (computer.getIsComputerStanding())
+		{
+			System.out.println("You win this round.");
+			System.out.println("Your score: " + score.getPlayerScore());
+			score.setComputerScore(-(score.getComputerScore()));
+			System.out.println("---------------------------------------------------------------------");
+
+			isAnyoneStanding = false;
+			shouldRoundEnd = true;
+		}
+		
+		else
+		{
+			System.out.println("Everyone was sitting.");
+			shouldRoundEnd = true;
+		}
+		
+		return shouldRoundEnd;
+	}
+//	end of someoneIsStandingForASingle1Roll()
+	
+	public boolean everyoneDecidesToSit()
+	{
+		boolean didEveryoneSit = false;
+		
+		if (input.getIsPlayerStanding())
+		{
+			score.setPlayerScore(turnScore);
+			input.askIfUserWantsToKeepPlaying();
+		}
+		
+		if (computer.getIsComputerStanding())
+		{
+			score.setComputerScore(turnScore);
+			computer.decideIfComputerWantsToKeepPlaying();
+			
+		}
+		
+		if (!input.getIsPlayerStanding() && !computer.getIsComputerStanding())
+		{ 
+			System.out.println("---------------------------------------------------------------------");
+
+			isAnyoneStanding = false;
+			didEveryoneSit = true;
+		}
+		
+		return didEveryoneSit;
+	}
+//	end of everyoneDecidesToSit
+
+}
+//end of Round
